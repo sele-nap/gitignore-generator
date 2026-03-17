@@ -1,35 +1,8 @@
 import fs from 'fs';
 
 const SIGNATURES = [
-  // JavaScript / TypeScript
-  { file: 'package.json',          templates: ['node'] },
-  { file: 'tsconfig.json',         templates: ['node'] },
-  { file: '*.ts',                  templates: ['node'] },
-  { file: 'next.config.js',        templates: ['node'] },
-  { file: 'next.config.ts',        templates: ['node'] },
-  { file: 'angular.json',          templates: ['node', 'angular'] },
-  { file: 'vue.config.js',         templates: ['node', 'vue'] },
-  { file: 'svelte.config.js',      templates: ['node'] },
-  { file: 'nest-cli.json',         templates: ['node'] },
-
-  // Python
-  { file: 'requirements.txt',      templates: ['python'] },
-  { file: 'Pipfile',               templates: ['python'] },
-  { file: 'pyproject.toml',        templates: ['python'] },
-  { file: '*.py',                  templates: ['python'] },
-
-  // Rust
-  { file: 'Cargo.toml',            templates: ['rust'] },
-
-  // Go
-  { file: 'go.mod',                templates: ['go'] },
-
-  // Java / Kotlin / Scala
-  { file: 'pom.xml',               templates: ['java', 'maven'] },
-  { file: 'build.gradle',          templates: ['java', 'gradle'] },
-  { file: 'build.gradle.kts',      templates: ['java', 'kotlin', 'gradle'] },
-  { file: '*.kt',                  templates: ['kotlin'] },
-  { file: 'build.sbt',             templates: ['scala'] },
+  // Android
+  { file: 'AndroidManifest.xml',   templates: ['android'] },
 
   // C / C++
   { file: 'CMakeLists.txt',        templates: ['cmake', 'c', 'c++'] },
@@ -38,32 +11,41 @@ const SIGNATURES = [
 
   // C#
   { file: '*.csproj',              templates: ['csharp'] },
-
-  // PHP
-  { file: 'composer.json',         templates: ['php'] },
-
-  // Ruby
-  { file: 'Gemfile',               templates: ['ruby'] },
-
-  // Swift / Xcode
-  { file: '*.xcodeproj',           templates: ['swift', 'xcode'] },
-  { file: '*.xcworkspace',         templates: ['swift', 'xcode'] },
+  { file: '*.sln',                 templates: ['visualstudio'] },
 
   // Dart / Flutter
   { file: 'pubspec.yaml',          templates: ['flutter', 'dart'] },
 
+  // Deno
+  { file: 'deno.json',             templates: ['deno'] },
+
   // Elixir
   { file: 'mix.exs',               templates: ['elixir'] },
 
-  // Deno
-  { file: 'deno.json',             templates: ['deno'] },
+  // Go
+  { file: 'go.mod',                templates: ['go'] },
 
   // Haskell
   { file: '*.cabal',               templates: ['haskell'] },
   { file: 'stack.yaml',            templates: ['haskell'] },
 
-  // R
-  { file: '*.Rproj',               templates: ['r'] },
+  // Java / Kotlin / Scala
+  { file: 'pom.xml',               templates: ['java', 'maven'] },
+  { file: 'build.gradle',          templates: ['java', 'gradle'] },
+  { file: 'build.gradle.kts',      templates: ['java', 'kotlin', 'gradle'] },
+  { file: '*.kt',                  templates: ['kotlin'] },
+  { file: 'build.sbt',             templates: ['scala'] },
+
+  // JavaScript / TypeScript
+  { file: 'package.json',          templates: ['node'] },
+  { file: 'tsconfig.json',         templates: ['node'] },
+  { file: '*.ts',                  templates: ['node'] },
+  { file: 'angular.json',          templates: ['node', 'angular'] },
+  { file: 'nest-cli.json',         templates: ['node'] },
+  { file: 'next.config.js',        templates: ['node'] },
+  { file: 'next.config.ts',        templates: ['node'] },
+  { file: 'svelte.config.js',      templates: ['node'] },
+  { file: 'vue.config.js',         templates: ['node', 'vue'] },
 
   // Julia
   { file: '*.jl',                  templates: ['julia'] },
@@ -71,17 +53,33 @@ const SIGNATURES = [
   // Lua
   { file: '*.lua',                 templates: ['lua'] },
 
+  // PHP
+  { file: 'composer.json',         templates: ['php'] },
+
+  // Python
+  { file: 'requirements.txt',      templates: ['python'] },
+  { file: 'Pipfile',               templates: ['python'] },
+  { file: 'pyproject.toml',        templates: ['python'] },
+  { file: '*.py',                  templates: ['python'] },
+
+  // R
+  { file: '*.Rproj',               templates: ['r'] },
+
+  // Ruby
+  { file: 'Gemfile',               templates: ['ruby'] },
+
+  // Rust
+  { file: 'Cargo.toml',            templates: ['rust'] },
+
+  // Swift / Xcode
+  { file: '*.xcodeproj',           templates: ['swift', 'xcode'] },
+  { file: '*.xcworkspace',         templates: ['swift', 'xcode'] },
+
   // Terraform
   { file: '*.tf',                  templates: ['terraform'] },
 
   // Unity
   { file: 'ProjectSettings',       templates: ['unity'] },
-
-  // Android
-  { file: 'AndroidManifest.xml',   templates: ['android'] },
-
-  // Visual Studio
-  { file: '*.sln',                 templates: ['visualstudio'] },
 ];
 
 const OS_SIGNATURES = {
