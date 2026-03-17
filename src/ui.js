@@ -1,22 +1,22 @@
 import readline from 'readline';
 
 const c = {
-  reset:  '\x1b[0m',
   bold:   '\x1b[1m',
   cyan:   '\x1b[36m',
-  green:  '\x1b[32m',
-  yellow: '\x1b[33m',
-  red:    '\x1b[31m',
   gray:   '\x1b[90m',
+  green:  '\x1b[32m',
+  red:    '\x1b[31m',
+  reset:  '\x1b[0m',
+  yellow: '\x1b[33m',
 };
 
 export const color = {
   boldCyan:  (s) => `${c.bold}${c.cyan}${s}${c.reset}`,
   boldGreen: (s) => `${c.bold}${c.green}${s}${c.reset}`,
-  green:     (s) => `${c.green}${s}${c.reset}`,
-  yellow:    (s) => `${c.yellow}${s}${c.reset}`,
-  red:       (s) => `${c.red}${s}${c.reset}`,
   gray:      (s) => `${c.gray}${s}${c.reset}`,
+  green:     (s) => `${c.green}${s}${c.reset}`,
+  red:       (s) => `${c.red}${s}${c.reset}`,
+  yellow:    (s) => `${c.yellow}${s}${c.reset}`,
 };
 
 function clearLines(n) {
