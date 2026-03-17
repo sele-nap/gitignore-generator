@@ -1,6 +1,27 @@
 import readline from 'readline';
 
-const c = {
+interface AnsiCodes {
+  bold:   string;
+  cyan:   string;
+  gray:   string;
+  green:  string;
+  red:    string;
+  reset:  string;
+  yellow: string;
+}
+
+export interface Choice {
+  checked?: boolean;
+  name:     string;
+  value:    string;
+}
+
+export interface Spinner {
+  fail(msg: string):    void;
+  succeed(msg: string): void;
+}
+
+const c: AnsiCodes = {
   bold:   '\x1b[1m',
   cyan:   '\x1b[36m',
   gray:   '\x1b[90m',
@@ -11,20 +32,22 @@ const c = {
 };
 
 export const color = {
-  boldCyan:  (s) => `${c.bold}${c.cyan}${s}${c.reset}`,
-  boldGreen: (s) => `${c.bold}${c.green}${s}${c.reset}`,
-  gray:      (s) => `${c.gray}${s}${c.reset}`,
-  green:     (s) => `${c.green}${s}${c.reset}`,
-  red:       (s) => `${c.red}${s}${c.reset}`,
-  yellow:    (s) => `${c.yellow}${s}${c.reset}`,
+  boldCyan:  (s: string) => `${c.bold}${c.cyan}${s}${c.reset}`,
+  boldGreen: (s: string) => `${c.bold}${c.green}${s}${c.reset}`,
+  gray:      (s: string) => `${c.gray}${s}${c.reset}`,
+  green:     (s: string) => `${c.green}${s}${c.reset}`,
+  red:       (s: string) => `${c.red}${s}${c.reset}`,
+  yellow:    (s: string) => `${c.yellow}${s}${c.reset}`,
 };
 
-function clearLines(n) {
+const FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+
+function clearLines(n: number): void {
   process.stdout.write('\r\x1b[2K');
   for (let i = 1; i < n; i++) process.stdout.write('\x1b[1A\r\x1b[2K');
 }
 
-function rawMode(enable) {
+function rawMode(enable: boolean): void {
   if (enable) {
     process.stdin.setRawMode(true);
     process.stdin.resume();
@@ -35,9 +58,7 @@ function rawMode(enable) {
   }
 }
 
-const FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
-
-export function spinner(text) {
+export function spinner(text: string): Spinner {
   let i = 0;
   process.stdout.write('\x1b[?25l');
   const timer = setInterval(
@@ -45,22 +66,22 @@ export function spinner(text) {
     80,
   );
   return {
-    succeed(msg) {
-      clearInterval(timer);
-      process.stdout.write(`\r\x1b[2K${color.green('✔')} ${msg}\n`);
-      process.stdout.write('\x1b[?25h');
-    },
-    fail(msg) {
+    fail(msg: string): void {
       clearInterval(timer);
       process.stdout.write(`\r\x1b[2K${color.red('✖')} ${msg}\n`);
+      process.stdout.write('\x1b[?25h');
+    },
+    succeed(msg: string): void {
+      clearInterval(timer);
+      process.stdout.write(`\r\x1b[2K${color.green('✔')} ${msg}\n`);
       process.stdout.write('\x1b[?25h');
     },
   };
 }
 
-export function promptInput(message, defaultValue) {
+export function promptInput(message: string, defaultValue?: string): Promise<string> {
   return new Promise((resolve) => {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    const rl   = readline.createInterface({ input: process.stdin, output: process.stdout });
     const hint = defaultValue ? ` ${c.gray}(${defaultValue})${c.reset}` : '';
     rl.question(`${c.cyan}?${c.reset} ${message}${hint}: `, (answer) => {
       rl.close();
@@ -69,12 +90,12 @@ export function promptInput(message, defaultValue) {
   });
 }
 
-export function promptList(message, choices) {
+export function promptList(message: string, choices: Choice[]): Promise<string> {
   return new Promise((resolve) => {
-    let cursor = 0;
+    let cursor    = 0;
     let lineCount = 0;
 
-    function render() {
+    function render(): void {
       const lines = [`${c.cyan}?${c.reset} ${message}`];
       for (let i = 0; i < choices.length; i++) {
         const active  = i === cursor;
@@ -91,14 +112,14 @@ export function promptList(message, choices) {
     render();
     rawMode(true);
 
-    function onKey(key) {
-      if (key === '\x03') { cleanup(); process.exit(); }
-      if      (key === '\x1b[A') { cursor = Math.max(0, cursor - 1); render(); }
+    function onKey(key: string): void {
+      if (key === '\x03')        { cleanup(); process.exit(); }
+      if (key === '\x1b[A')      { cursor = Math.max(0, cursor - 1); render(); }
       else if (key === '\x1b[B') { cursor = Math.min(choices.length - 1, cursor + 1); render(); }
       else if (key === '\r')     { cleanup(); process.stdout.write('\n'); resolve(choices[cursor].value); }
     }
 
-    function cleanup() {
+    function cleanup(): void {
       process.stdin.removeListener('data', onKey);
       rawMode(false);
       process.stdout.write('\x1b[?25h');
@@ -108,13 +129,13 @@ export function promptList(message, choices) {
   });
 }
 
-export function promptCheckbox(message, choices, pageSize = 20) {
+export function promptCheckbox(message: string, choices: Choice[], pageSize = 20): Promise<string[]> {
   return new Promise((resolve) => {
-    const checked = new Set(choices.filter(c => c.checked).map(c => c.value));
+    const checked = new Set<string>(choices.filter(ch => ch.checked).map(ch => ch.value));
     let cursor    = 0;
     let lineCount = 0;
 
-    function render() {
+    function render(): void {
       const lines = [`${c.cyan}?${c.reset} ${message}`];
       const half  = Math.floor(pageSize / 2);
       let start   = Math.max(0, cursor - half);
@@ -142,16 +163,15 @@ export function promptCheckbox(message, choices, pageSize = 20) {
     render();
     rawMode(true);
 
-    function onKey(key) {
-      if (key === '\x03') { cleanup(); process.exit(); }
-      if      (key === '\x1b[A') { cursor = Math.max(0, cursor - 1); render(); }
+    function onKey(key: string): void {
+      if (key === '\x03')        { cleanup(); process.exit(); }
+      if (key === '\x1b[A')      { cursor = Math.max(0, cursor - 1); render(); }
       else if (key === '\x1b[B') { cursor = Math.min(choices.length - 1, cursor + 1); render(); }
       else if (key === ' ') {
         const val = choices[cursor].value;
         checked.has(val) ? checked.delete(val) : checked.add(val);
         render();
-      }
-      else if (key === '\r') {
+      } else if (key === '\r') {
         const selected = choices.filter(ch => checked.has(ch.value)).map(ch => ch.value);
         if (selected.length === 0) return;
         cleanup();
@@ -160,7 +180,7 @@ export function promptCheckbox(message, choices, pageSize = 20) {
       }
     }
 
-    function cleanup() {
+    function cleanup(): void {
       process.stdin.removeListener('data', onKey);
       rawMode(false);
       process.stdout.write('\x1b[?25h');
