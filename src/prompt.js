@@ -3,7 +3,6 @@ import { color, promptInput, promptList, promptCheckbox } from './ui.js';
 export async function promptTemplates(allTemplates, suggested) {
   const suggestedSet = new Set(suggested);
 
-  // Sort: suggestions first, then the rest alphabetically
   const sorted = [
     ...suggested.filter(t => allTemplates.includes(t)),
     ...allTemplates.filter(t => !suggestedSet.has(t)),

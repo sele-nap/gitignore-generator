@@ -9,7 +9,6 @@ import { fileExists, mergeContent, writeFile, readFile } from './writer.js';
 async function main() {
   console.log(color.boldCyan('\n🔥 Interactive .gitignore Generator\n'));
 
-  // 1. Fetch available templates
   const s1 = spinner('Fetching templates from gitignore.io…');
   let allTemplates;
   try {
@@ -20,16 +19,13 @@ async function main() {
     process.exit(1);
   }
 
-  // 2. Auto-detect relevant templates
   const suggested = detectTemplates();
   if (suggested.length > 0) {
     console.log(color.yellow(`\n✦ Detected in this directory: ${suggested.join(', ')}\n`));
   }
 
-  // 3. Selection prompt
   const selected = await promptTemplates(allTemplates, suggested);
 
-  // 4. Fetch content
   const s2 = spinner(`Generating .gitignore for: ${selected.join(', ')}…`);
   let content;
   try {
@@ -40,11 +36,9 @@ async function main() {
     process.exit(1);
   }
 
-  // 5. Output path
   const defaultPath = path.join(process.cwd(), '.gitignore');
   const outputPath  = await promptOutputPath(defaultPath);
 
-  // 6. Merge or overwrite if file already exists
   if (fileExists(outputPath)) {
     const strategy = await promptMergeStrategy();
     if (strategy === 'cancel') {
@@ -56,7 +50,6 @@ async function main() {
     }
   }
 
-  // 7. Write file
   writeFile(outputPath, content);
   console.log(color.boldGreen(`\n✅ .gitignore written to: ${outputPath}\n`));
 }

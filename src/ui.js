@@ -1,7 +1,5 @@
 import readline from 'readline';
 
-// ─── ANSI colors ──────────────────────────────────────────────────────────────
-
 const c = {
   reset:  '\x1b[0m',
   bold:   '\x1b[1m',
@@ -21,8 +19,6 @@ export const color = {
   gray:      (s) => `${c.gray}${s}${c.reset}`,
 };
 
-// ─── Internal helpers ─────────────────────────────────────────────────────────
-
 function clearLines(n) {
   process.stdout.write('\r\x1b[2K');
   for (let i = 1; i < n; i++) process.stdout.write('\x1b[1A\r\x1b[2K');
@@ -38,8 +34,6 @@ function rawMode(enable) {
     process.stdin.pause();
   }
 }
-
-// ─── Spinner ──────────────────────────────────────────────────────────────────
 
 const FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 
@@ -64,8 +58,6 @@ export function spinner(text) {
   };
 }
 
-// ─── Input prompt ─────────────────────────────────────────────────────────────
-
 export function promptInput(message, defaultValue) {
   return new Promise((resolve) => {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -77,8 +69,6 @@ export function promptInput(message, defaultValue) {
   });
 }
 
-// ─── List prompt (single select) ──────────────────────────────────────────────
-
 export function promptList(message, choices) {
   return new Promise((resolve) => {
     let cursor = 0;
@@ -87,7 +77,7 @@ export function promptList(message, choices) {
     function render() {
       const lines = [`${c.cyan}?${c.reset} ${message}`];
       for (let i = 0; i < choices.length; i++) {
-        const active = i === cursor;
+        const active  = i === cursor;
         const pointer = active ? `${c.cyan}❯${c.reset}` : ' ';
         const label   = active ? `${c.cyan}${choices[i].name}${c.reset}` : choices[i].name;
         lines.push(`${pointer} ${label}`);
@@ -118,8 +108,6 @@ export function promptList(message, choices) {
   });
 }
 
-// ─── Checkbox prompt (multi select) ───────────────────────────────────────────
-
 export function promptCheckbox(message, choices, pageSize = 20) {
   return new Promise((resolve) => {
     const checked = new Set(choices.filter(c => c.checked).map(c => c.value));
@@ -128,8 +116,6 @@ export function promptCheckbox(message, choices, pageSize = 20) {
 
     function render() {
       const lines = [`${c.cyan}?${c.reset} ${message}`];
-
-      // Scrolling window centered on cursor
       const half  = Math.floor(pageSize / 2);
       let start   = Math.max(0, cursor - half);
       let end     = Math.min(choices.length, start + pageSize);
@@ -158,7 +144,6 @@ export function promptCheckbox(message, choices, pageSize = 20) {
 
     function onKey(key) {
       if (key === '\x03') { cleanup(); process.exit(); }
-
       if      (key === '\x1b[A') { cursor = Math.max(0, cursor - 1); render(); }
       else if (key === '\x1b[B') { cursor = Math.min(choices.length - 1, cursor + 1); render(); }
       else if (key === ' ') {
@@ -168,7 +153,7 @@ export function promptCheckbox(message, choices, pageSize = 20) {
       }
       else if (key === '\r') {
         const selected = choices.filter(ch => checked.has(ch.value)).map(ch => ch.value);
-        if (selected.length === 0) return; // require at least one
+        if (selected.length === 0) return;
         cleanup();
         process.stdout.write('\n');
         resolve(selected);
