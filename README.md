@@ -12,16 +12,19 @@ Interactive CLI to generate a `.gitignore` file from [gitignore.io](https://www.
 ## Requirements
 
 - Node.js 18+
+- TypeScript 5+
 
 ## Usage
 
 ```bash
-node src/index.js
+npm run build
+node dist/index.js
 ```
 
 Or install globally:
 
 ```bash
+npm run build
 npm link
 gitignore-gen
 ```
@@ -34,10 +37,10 @@ Android, C, C++, C#, Dart, Deno, Elixir, Flutter, Go, Haskell, Java, JavaScript,
 
 ```
 src/
-├── index.js    entry point
-├── api.js      fetches templates from gitignore.io
-├── detect.js   auto-detects project languages
-├── prompt.js   CLI prompts
-├── ui.js       colors, spinner, interactive inputs
-└── writer.js   reads and writes the .gitignore file
+├── index.ts    entry point
+├── api.ts      fetches templates from gitignore.io
+├── detect.ts   auto-detects project languages
+├── prompt.ts   CLI prompts
+├── ui.ts       colors, spinner, interactive inputs
+└── writer.ts   reads and writes the .gitignore file
 ```
