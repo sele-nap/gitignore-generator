@@ -3,6 +3,8 @@ import path from 'path';
 
 const SIGNATURES = [
   { file: 'package.json',        templates: ['node'] },
+  { file: 'tsconfig.json',       templates: ['node'] },
+  { file: '*.ts',                templates: ['node'] },
   { file: 'requirements.txt',    templates: ['python'] },
   { file: 'Pipfile',             templates: ['python'] },
   { file: 'pyproject.toml',      templates: ['python'] },
