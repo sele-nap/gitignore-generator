@@ -4,14 +4,14 @@ import chalk from 'chalk';
 export async function promptTemplates(allTemplates, suggested) {
   const suggestedSet = new Set(suggested);
 
-  // Trier : suggestions en tête, puis le reste alphabétiquement
+  // Sort: suggestions first, then the rest alphabetically
   const sorted = [
     ...suggested.filter(t => allTemplates.includes(t)),
     ...allTemplates.filter(t => !suggestedSet.has(t)),
   ];
 
   const choices = sorted.map(t => ({
-    name: suggestedSet.has(t) ? chalk.green(`${t} ✦ détecté`) : t,
+    name: suggestedSet.has(t) ? chalk.green(`${t} ✦ detected`) : t,
     value: t,
     checked: suggestedSet.has(t),
   }));
@@ -20,12 +20,12 @@ export async function promptTemplates(allTemplates, suggested) {
     {
       type: 'checkbox',
       name: 'templates',
-      message: 'Sélectionne les templates à inclure (espace pour cocher, entrée pour valider) :',
+      message: 'Select templates to include (space to check, enter to confirm):',
       choices,
       pageSize: 20,
       loop: false,
       validate(selected) {
-        return selected.length > 0 || 'Sélectionne au moins un template.';
+        return selected.length > 0 || 'Please select at least one template.';
       },
     },
   ]);
@@ -38,7 +38,7 @@ export async function promptOutputPath(defaultPath) {
     {
       type: 'input',
       name: 'outputPath',
-      message: 'Chemin du fichier de sortie :',
+      message: 'Output file path:',
       default: defaultPath,
     },
   ]);
@@ -50,11 +50,11 @@ export async function promptMergeStrategy() {
     {
       type: 'list',
       name: 'strategy',
-      message: 'Un .gitignore existe déjà. Que faire ?',
+      message: 'A .gitignore already exists. What do you want to do?',
       choices: [
-        { name: 'Fusionner (ajouter sans doublons)',  value: 'merge' },
-        { name: 'Remplacer (écraser complètement)',   value: 'overwrite' },
-        { name: 'Annuler',                            value: 'cancel' },
+        { name: 'Merge (add without duplicates)',  value: 'merge' },
+        { name: 'Overwrite (replace completely)',  value: 'overwrite' },
+        { name: 'Cancel',                          value: 'cancel' },
       ],
     },
   ]);

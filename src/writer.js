@@ -10,7 +10,7 @@ export function mergeContent(existing, incoming) {
     .split('\n')
     .filter(line => !existingLines.has(line.trim()));
 
-  return existing.trimEnd() + '\n\n# --- Ajout automatique ---\n' + newLines.join('\n');
+  return existing.trimEnd() + '\n\n# --- Auto-generated addition ---\n' + newLines.join('\n');
 }
 
 export function writeFile(filePath, content) {

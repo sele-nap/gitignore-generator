@@ -1,7 +1,7 @@
 {
   "name": "gitignore-generator",
   "version": "1.0.0",
-  "description": "Générateur interactif de .gitignore",
+  "description": "Interactive .gitignore generator",
   "type": "module",
   "bin": {
     "gitignore-gen": "./src/index.js"
